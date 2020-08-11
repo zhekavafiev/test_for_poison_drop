@@ -1,6 +1,8 @@
 <?php
 
-function decodeMorze($morze)
+namespace App;
+
+function encodeMorze($string)
 {
     $map = [
         '•−' => 'a',
@@ -42,25 +44,23 @@ function decodeMorze($morze)
         '•••−−−•••' => 'SOS'
     
     ];
-    $readyString = trim($morze);
-    $words = explode('   ', $readyString);
-    $decodeWords = array_map(function ($word) use ($map) {
-        $simbols = explode(' ', $word);
-        $decodeSimbols = '';
+    $readyString = trim($string);
+    $words = explode(' ', $readyString);
+    $encodeWords = array_map(function ($word) use ($map) {
+        $lowerWorld = strtolower($word);
+        $simbols = str_split($lowerWorld);
+        $encodeSimbols = '';
         foreach ($simbols as $simbol) {
-            if (!array_key_exists($simbol, $map)) {
-                continue;
+            if (in_array($simbol, $map)) {
+                $morzeSimbol = array_search($simbol, $map);
+                $encodeSimbols .= "{$morzeSimbol} ";
             }
-            $decodeSimbols .= $map[$simbol];
         }
-
-        return $decodeSimbols;
+        return trim($encodeSimbols);
     }, $words);
 
-    return implode(' ', $decodeWords);
+    return implode('   ', $encodeWords);
 }
 
-$morze = '  −−−−− •−−−− ••−−− •••••   •••• • •−•• •−•• −−−   •−− −−− •−• •−•• −••   •••−−−•••   ';
-
-
-var_dump(decodeMorze($morze));
+$string = '0125 Hello world SOS    ';
+var_dump(encodeMorze($string));
