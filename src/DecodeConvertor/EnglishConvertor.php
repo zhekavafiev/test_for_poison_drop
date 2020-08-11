@@ -1,10 +1,15 @@
 <?php
 
-namespace App;
+namespace App\Converter;
 
-function decodeMorze($morze)
+require_once __DIR__ . '/DecodeMorzeInterface.php';
+
+use App\DecodeConvertor\DecodeMorzeInterface;
+
+class EnglishConverter implements DecodeMorzeInterface
 {
-    $map = [
+    private $string;
+    private $map = [
         '•−' => 'a',
         '−•••' => 'b',
         '−•−•' => 'c',
@@ -41,26 +46,31 @@ function decodeMorze($morze)
         '−−−••' => 8,
         '−−−−•' => 9,
         '−−−−−' => 0,
-        '•••−−−•••' => 'SOS'
+        '•••−−−•••' => 'sos'
     
     ];
-    $readyString = trim($morze);
-    $words = explode('   ', $readyString);
-    $decodeWords = array_map(function ($word) use ($map) {
-        $simbols = explode(' ', $word);
-        $decodeSimbols = '';
-        foreach ($simbols as $simbol) {
-            if (!array_key_exists($simbol, $map)) {
-                continue;
+
+    public function __construct($string)
+    {
+        $this->string = $string;
+    }
+
+    public function convert()
+    {
+        $words = explode('   ', $this->string);
+        $decodeWords = array_map(function ($word) {
+            if (array_key_exists($word, $this->map)) {
+                return $this->map[$word];
             }
-            $decodeSimbols .= $map[$simbol];
-        }
 
-        return $decodeSimbols;
-    }, $words);
+            $decodeWord = '';
+            $simbols = explode(' ', $word);
+            foreach ($simbols as $simbol) {
+                $decodeWord .= $this->map[$simbol];
+            }
+            return $decodeWord;
+        }, $words);
 
-    return implode(' ', $decodeWords);
+        return implode(' ', $decodeWords);
+    }
 }
-
-$morze = '  −−−−− •−−−− ••−−− •••••   •••• • •−•• •−•• −−−   •−− −−− •−• •−•• −••   •••−−−•••   ';
-var_dump(decodeMorze($morze));

@@ -1,10 +1,15 @@
 <?php
 
-namespace App;
+namespace App\EncodeConvertor;
 
-function encodeMorze($string)
+require_once __DIR__ . '/EncodeMorzeInterface.php';
+
+use App\EncodeConvertor\EncodeMorzeInterface;
+
+class EnglishConverter implements EncodeMorzeInterface
 {
-    $map = [
+    private $string;
+    private $map = [
         '•−' => 'a',
         '−•••' => 'b',
         '−•−•' => 'c',
@@ -41,26 +46,32 @@ function encodeMorze($string)
         '−−−••' => 8,
         '−−−−•' => 9,
         '−−−−−' => 0,
-        '•••−−−•••' => 'SOS'
+        '•••−−−•••' => 'sos'
     
     ];
-    $readyString = trim($string);
-    $words = explode(' ', $readyString);
-    $encodeWords = array_map(function ($word) use ($map) {
-        $lowerWorld = strtolower($word);
-        $simbols = str_split($lowerWorld);
-        $encodeSimbols = '';
-        foreach ($simbols as $simbol) {
-            if (in_array($simbol, $map)) {
-                $morzeSimbol = array_search($simbol, $map);
-                $encodeSimbols .= "{$morzeSimbol} ";
+
+    public function __construct($string)
+    {
+        $this->string = $string;
+    }
+
+    public function convert()
+    {
+        $words = explode(' ', $this->string);
+
+        $encodeWords = array_map(function ($word) {
+            if (array_key_exists(strtolower($word), array_flip($this->map))) {
+                return array_flip($this->map)[$word];
             }
-        }
-        return trim($encodeSimbols);
-    }, $words);
+            $simbols = str_split($word);
+            $encodeWord = '';
+            foreach ($simbols as $simbol) {
+                $encodeWord .=  ' ' . array_flip($this->map)[$simbol];
+            }
 
-    return implode('   ', $encodeWords);
+            return trim($encodeWord);
+        }, $words);
+
+        return implode('   ', $encodeWords);
+    }
 }
-
-$string = '0125 Hello world SOS    ';
-var_dump(encodeMorze($string));
