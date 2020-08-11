@@ -6,7 +6,6 @@ require_once __DIR__ . '/EncodeConvertor/EncodeMorzeInterface.php';
 
 use App\EncodeConvertor\EncodeMorzeInterface;
 
-
 class EncodeMorze
 {
     private $convertor;

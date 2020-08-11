@@ -59,12 +59,13 @@ class EnglishConverter implements DecodeMorzeInterface
     {
         $words = explode('   ', $this->string);
         $decodeWords = array_map(function ($word) {
-            if (array_key_exists($word, $this->map)) {
-                return $this->map[$word];
+            $lowerWord = strtolower($word);
+            if (array_key_exists($lowerWord, $this->map)) {
+                return $this->map[$lowerWord];
             }
 
             $decodeWord = '';
-            $simbols = explode(' ', $word);
+            $simbols = explode(' ', $lowerWord);
             foreach ($simbols as $simbol) {
                 $decodeWord .= $this->map[$simbol];
             }

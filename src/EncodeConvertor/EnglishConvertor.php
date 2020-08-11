@@ -60,10 +60,11 @@ class EnglishConverter implements EncodeMorzeInterface
         $words = explode(' ', $this->string);
 
         $encodeWords = array_map(function ($word) {
-            if (array_key_exists(strtolower($word), array_flip($this->map))) {
-                return array_flip($this->map)[$word];
+            $lowerWord = strtolower($word);
+            if (array_key_exists(strtolower($lowerWord), array_flip($this->map))) {
+                return array_flip($this->map)[$lowerWord];
             }
-            $simbols = str_split($word);
+            $simbols = str_split($lowerWord);
             $encodeWord = '';
             foreach ($simbols as $simbol) {
                 $encodeWord .=  ' ' . array_flip($this->map)[$simbol];
